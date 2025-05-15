@@ -1,5 +1,7 @@
 github.com/KuranovNikita/ecomProto v0.0.2 h1:CN1hTPcOnVATdKiH1mwsU2QGeLoFvpXBpY+C/J+/fIs=
 github.com/KuranovNikita/ecomProto v0.0.2/go.mod h1:QU7dKs5VJq7MJzi7d8gyb8ROeM8zL/d2SB8arh8Zsig=
+github.com/go-chi/chi v1.5.5 h1:vOB/HbEMt9QqBqErz07QehcOKHaWFtuj87tTDVz2qXE=
+github.com/go-chi/chi v1.5.5/go.mod h1:C9JqLr3tIYjDOZpzn+BCuxY8z8vmca43EeMgyZt7irw=
 github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.2 h1:sGm2vDRFUrQJO/Veii4h4zG2vvqG6uWNkBHSTqXOZk0=
 github.com/grpc-ecosystem/go-grpc-middleware/v2 v2.3.2/go.mod h1:wd1YpapPLivG6nQgbf7ZkG1hhSOXDhhn4MLTknx2aAc=
 github.com/joho/godotenv v1.5.1 h1:7eLL/+HRGLY0ldzfGMeQkb7vMd0as4CfYvUVzLqw0N0=

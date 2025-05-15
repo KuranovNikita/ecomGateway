@@ -2,8 +2,16 @@ package main
 
 import (
 	"ecomGateway/internal/config"
+	ordergrpc "ecomGateway/internal/grpc/order"
+	productgrpc "ecomGateway/internal/grpc/product"
+	usergrpc "ecomGateway/internal/grpc/user"
+	httphandler "ecomGateway/internal/http_handler"
+	"ecomGateway/internal/processor"
 	"log/slog"
+	"net/http"
 	"os"
+
+	"github.com/go-chi/chi"
 )
 
 const (
@@ -19,6 +27,52 @@ func main() {
 
 	log.Info("starting url-shortener")
 	log.Debug("debug messages are enabled")
+
+	userClient, err := usergrpc.New(log, cfg.UserAddr, cfg.UserTimeout, cfg.UserRetries)
+
+	if err != nil {
+		log.Error("failed to init user client", err)
+		os.Exit(1)
+	}
+
+	orderClient, err := ordergrpc.New(log, cfg.OrderAddr, cfg.OrderTimeout, cfg.UserRetries)
+
+	if err != nil {
+		log.Error("failed to init order client", err)
+		os.Exit(1)
+	}
+
+	productClient, err := productgrpc.New(log, cfg.ProductAddr, cfg.ProductTimeout, cfg.ProductRetries)
+
+	if err != nil {
+		log.Error("failed to init product client", err)
+		os.Exit(1)
+	}
+
+	processor := processor.NewProcessorService(*userClient, *orderClient, *productClient)
+
+	httphandler := httphandler.NewHTTPHandler(processor, log)
+
+	router := chi.NewRouter()
+
+	httphandler.RegisterRoutes(router)
+
+	log.Info("starting server", slog.String("address", cfg.HttpAddress))
+
+	srv := &http.Server{
+		Addr:         cfg.HttpAddress,
+		Handler:      router,
+		ReadTimeout:  cfg.HttpTimeout,
+		WriteTimeout: cfg.HttpTimeout,
+		IdleTimeout:  cfg.IdleTimeout,
+	}
+
+	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Error("failed to start server", slog.String("error", err.Error()))
+		os.Exit(1)
+	}
+	log.Info("server stopped")
+
 }
 
 func setupLogger(env string) *slog.Logger {

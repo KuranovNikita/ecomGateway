@@ -9,13 +9,13 @@ import (
 
 type Config struct {
 	Env            string
-	UserAddr       string
+	UserTarget     string
 	UserTimeout    time.Duration
 	UserRetries    int
-	OrderAddr      string
+	OrderTarget    string
 	OrderTimeout   time.Duration
 	OrderRetries   int
-	ProductAddr    string
+	ProductTarget  string
 	ProductTimeout time.Duration
 	ProductRetries int
 	HttpAddress    string
@@ -45,9 +45,9 @@ func MustLoad() *Config {
 	idleTimeoutStr := os.Getenv("IDLE_TIMEOUT")
 	idleTimeout := setTimeout(idleTimeoutStr)
 
-	userAddr := os.Getenv("USER_ADDR")
-	if userAddr == "" {
-		log.Fatal("FATAL: USER_ADDR is not set")
+	userTarget := os.Getenv("USER_TARGET")
+	if userTarget == "" {
+		log.Fatal("FATAL: USER_TARGET is not set")
 	}
 
 	userTimeoutStr := os.Getenv("USER_TIMEOUT")
@@ -56,9 +56,9 @@ func MustLoad() *Config {
 	userRetriesStr := os.Getenv("USER_RETRIES")
 	userRetries := setRetries(userRetriesStr)
 
-	orderAddr := os.Getenv("ORDER_ADDR")
-	if orderAddr == "" {
-		log.Fatal("FATAL: ORDER_ADDR is not set")
+	orderTarget := os.Getenv("ORDER_TARGET")
+	if orderTarget == "" {
+		log.Fatal("FATAL: ORDER_TARGET is not set")
 	}
 
 	orderTimeoutStr := os.Getenv("ORDER_TIMEOUT")
@@ -67,9 +67,9 @@ func MustLoad() *Config {
 	orderRetriesStr := os.Getenv("ORDER_RETRIES")
 	orderRetries := setRetries(orderRetriesStr)
 
-	productAddr := os.Getenv("PRODUCT_ADDR")
-	if productAddr == "" {
-		log.Fatal("FATAL: PRODUCT_ADDR is not set")
+	productTarget := os.Getenv("PRODUCT_TARGET")
+	if productTarget == "" {
+		log.Fatal("FATAL: PRODUCT_TARGET is not set")
 	}
 
 	productTimeoutStr := os.Getenv("PRODUCT_TIMEOUT")
@@ -83,13 +83,13 @@ func MustLoad() *Config {
 		HttpAddress:    httpAddress,
 		HttpTimeout:    httpTimeout,
 		IdleTimeout:    idleTimeout,
-		UserAddr:       userAddr,
+		UserTarget:     userTarget,
 		UserTimeout:    userTimeout,
 		UserRetries:    userRetries,
-		OrderAddr:      orderAddr,
+		OrderTarget:    orderTarget,
 		OrderTimeout:   orderTimeout,
 		OrderRetries:   orderRetries,
-		ProductAddr:    productAddr,
+		ProductTarget:  productTarget,
 		ProductTimeout: productTimeout,
 		ProductRetries: productRetries,
 	}

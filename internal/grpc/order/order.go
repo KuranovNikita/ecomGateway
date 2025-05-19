@@ -20,25 +20,46 @@ type Client struct {
 
 func New(
 	log *slog.Logger,
-	addr string,
+	target string,
 	timeout time.Duration,
 	retriesCount int,
+	additionalOpts ...grpc.DialOption,
 ) (*Client, error) {
 	const op = "grpc.order.New"
-	retryOpts := []grpcretry.CallOption{
+	// retryOpts := []grpcretry.CallOption{
+	// 	grpcretry.WithCodes(codes.NotFound, codes.Aborted, codes.DeadlineExceeded),
+	// 	grpcretry.WithMax(uint(retriesCount)),
+	// 	grpcretry.WithPerRetryTimeout(timeout),
+	// }
+
+	// cc, err := grpc.NewClient(target,
+	// 	grpc.WithTransportCredentials(insecure.NewCredentials()),
+	// 	grpc.WithChainUnaryInterceptor(
+	// 		grpcretry.UnaryClientInterceptor(retryOpts...),
+	// 	),
+	// )
+	// if err != nil {
+	// 	return nil, fmt.Errorf("%s: %w", op, err)
+	// }
+
+	retryInterceptorOpts := []grpcretry.CallOption{
 		grpcretry.WithCodes(codes.NotFound, codes.Aborted, codes.DeadlineExceeded),
 		grpcretry.WithMax(uint(retriesCount)),
 		grpcretry.WithPerRetryTimeout(timeout),
 	}
 
-	cc, err := grpc.NewClient(addr,
-		grpc.WithTransportCredentials(insecure.NewCredentials()),
-		grpc.WithChainUnaryInterceptor(
-			grpcretry.UnaryClientInterceptor(retryOpts...),
-		),
-	)
+	var dialOpts []grpc.DialOption
+
+	dialOpts = append(dialOpts, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	dialOpts = append(dialOpts, grpc.WithChainUnaryInterceptor(
+		grpcretry.UnaryClientInterceptor(retryInterceptorOpts...),
+	))
+
+	dialOpts = append(dialOpts, additionalOpts...)
+
+	cc, err := grpc.NewClient(target, dialOpts...)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", op, err)
+		return nil, fmt.Errorf("%s: failed to create gRPC client: %w", op, err)
 	}
 
 	return &Client{

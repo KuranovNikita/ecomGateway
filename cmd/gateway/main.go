@@ -28,24 +28,24 @@ func main() {
 	log.Info("starting url-shortener")
 	log.Debug("debug messages are enabled")
 
-	userClient, err := usergrpc.New(log, cfg.UserAddr, cfg.UserTimeout, cfg.UserRetries)
+	userClient, err := usergrpc.New(log, cfg.UserTarget, cfg.UserTimeout, cfg.UserRetries)
 
 	if err != nil {
-		log.Error("failed to init user client", err)
+		log.Error("failed to init user client", "err", err)
 		os.Exit(1)
 	}
 
-	orderClient, err := ordergrpc.New(log, cfg.OrderAddr, cfg.OrderTimeout, cfg.UserRetries)
+	orderClient, err := ordergrpc.New(log, cfg.OrderTarget, cfg.OrderTimeout, cfg.UserRetries)
 
 	if err != nil {
-		log.Error("failed to init order client", err)
+		log.Error("failed to init order client", "err", err)
 		os.Exit(1)
 	}
 
-	productClient, err := productgrpc.New(log, cfg.ProductAddr, cfg.ProductTimeout, cfg.ProductRetries)
+	productClient, err := productgrpc.New(log, cfg.ProductTarget, cfg.ProductTimeout, cfg.ProductRetries)
 
 	if err != nil {
-		log.Error("failed to init product client", err)
+		log.Error("failed to init product client", "err", err)
 		os.Exit(1)
 	}
 
